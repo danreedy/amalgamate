@@ -56,7 +56,9 @@ Combine **does not** save the new `kopy`, save `master`, or destroy `slave`
 
 #### Options
 
-A list of available options and their defaults
+| Option       | Accepted Values     | Default | Description       |
+|--------------|---------------------|---------|-------------------|
+| `:priority`   | `:master`, `:slave` | `:master` |Determines which object takes priority when setting attributes. If set to `:slave` the attribute values of `slave` will be used to update `master`|
 
 ### #diff(slave)
 
