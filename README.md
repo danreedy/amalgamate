@@ -39,6 +39,7 @@ Unify is the most frequently used method. Calling `master.unify(slave)` will:
 | Option       | Accepted Values     | Default | Description       |
 |--------------|---------------------|---------|-------------------|
 | `:priority`   | `:master`, `:slave` | `:master` |Determines which object takes priority when setting attributes. If set to `:slave` the attribute values of `slave` will be used to update `master`|
+| `:ignore` | `Array` of sybmols | `[:id, :created_at, :updated_at]` | Ignores attributes when merging.
 | `:update_associations` | `true`, `false` | `true` | Amalgamate will update `has_one` and `has_many` associations to change `slave` associations to point to `master`|
 | `:destroy` |`true`, `false` | `true` | Amalgamate will call `destroy` on `slave` after saving `master`|
 
