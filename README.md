@@ -41,25 +41,9 @@ Unify is the most frequently used method. Calling `master.unify(slave)` will:
 | `:priority`   | `:master`, `:slave` | `:master` |Determines which object takes priority when setting attributes. If set to `:slave` the attribute values of `slave` will be used to update `master`|
 | `:ignore` | `Array` of sybmols | `[:id, :created_at, :updated_at]` | Ignores attributes when merging.
 | `:update_associations` | `true`, `false` | `true` | Amalgamate will update `has_one` and `has_many` associations to change `slave` associations to point to `master`|
+| `:save` | `true`, `false` | `true` | Amalgamate will call `save` on `master`
 | `:destroy` |`true`, `false` | `true` | Amalgamate will call `destroy` on `slave` after saving `master`|
 
-
-### #combine(slave, options={})
-
-Combine is a non-destructive method that results in a new instance being instantiated combining the attributes of `master` and `slave`. Calling `master.combine(slave)` will:
-
-- Call `dup` on `master` creating a `kopy`.
-- Fill any nil attributes of `kopy` with the non-nil value of the same attribute of `slave`.
-- Use the attribute of `kopy` if there is a conflict between the same attribute of `slave`.
-- Ignore `has_one` and `has_many` associations
-
-Combine **does not** save the new `kopy`, save `master`, or destroy `slave`
-
-#### Options
-
-| Option       | Accepted Values     | Default | Description       |
-|--------------|---------------------|---------|-------------------|
-| `:priority`   | `:master`, `:slave` | `:master` |Determines which object takes priority when setting attributes. If set to `:slave` the attribute values of `slave` will be used to update `master`|
 
 ### #diff(slave)
 

@@ -11,20 +11,23 @@ module Amalgamate
       raise ClassMismatchError unless @master.class.eql?(@slave.class) 
     end
 
-    def unify(master=@master, slave=@slave, options={})
+    def unify(*args)
+      options = args.extract_options!
+      master, slave = args if args.any?
+      master ||= @master
+      slave ||= @slave
+      priority = options[:priority] || :master
+      secondary = priority.eql?(:master) ? :slave : :master
       diff_hash = self.diff(master, slave)
       merge_values = diff_hash.reduce({}) do |memo, attribute_set|
         attribute, values = attribute_set
-        memo[attribute] = values[:master] || values[:slave]
+        memo[attribute] = values[priority] || values[secondary]
         memo
       end
       master.assign_attributes(merge_values)
-      master.save if master.changed?
-      slave.destroy  
-    end
-
-    def combine(master, slave, options={})
-      
+      master.save if options[:save] != false && master.changed?
+      slave.destroy unless options[:destroy] == false
+      master 
     end
 
     def diff(master=@master, slave=@slave, options={})

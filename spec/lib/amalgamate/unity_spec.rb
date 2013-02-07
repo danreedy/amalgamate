@@ -4,7 +4,6 @@ describe Amalgamate::Unity do
   context "public methods" do
     subject { Amalgamate::Unity.new }
     it { subject.respond_to?(:unify).should be_true }
-    it { subject.respond_to?(:combine).should be_true }
     it { subject.respond_to?(:diff).should be_true }
     it { subject.respond_to?(:differing_attributes).should be_true }
   end
@@ -103,10 +102,27 @@ describe Amalgamate::Unity do
           slave.should_receive(:destroy)
           subject.unify
         end
+        it "does not destroy slave if options[:destroy] is false" do
+          slave.should_not_receive(:destroy)
+          subject.unify(destroy: false) 
+        end
         it "results in one less company" do
           expect {
             subject.unify
           }.to change{ Company.count }.from(2).to(1)
+        end
+      end
+      context "use slave as :priority", focus: true do
+        before do
+          FactoryGirl.create(:company, name: 'Vandelay Industries', slogan: "Purveyor of Fine Latex Products")
+          FactoryGirl.create(:company, name: 'The Human Fund', slogan: 'Money for People')
+        end
+        let(:master) { Company.first }
+        let(:slave) { Company.last }
+        it "should update master's name using slave's name" do
+          expect {
+            subject.unify(priority: :slave)
+          }.to change { Company.first.name }.from('Vandelay Industries').to('The Human Fund')
         end
       end
 
@@ -135,6 +151,18 @@ describe Amalgamate::Unity do
         it "calls #save with a changed master" do
           master.should_receive(:save).and_return(true)
           subject.unify
+        end
+        it "does not call #save if options[:save] is false" do
+          master.should_not_receive(:save)
+          subject.unify(save: false)
+        end
+        it "should return the merged object" do
+          merged_object = subject.unify
+          merged_object.should be_a Company
+        end
+        it "should replace nil attributes on master with slave values" do
+          merged_object = subject.unify
+          merged_object.slogan.should == slave.slogan
         end
       end
     end   
