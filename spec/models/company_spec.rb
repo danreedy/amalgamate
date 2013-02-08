@@ -13,4 +13,11 @@ describe Company do
       subject.employees.size.should == 3
     end
   end
+  context "company with headquarter" do
+    it "creates a headquarter" do
+      expect {
+        FactoryGirl.create(:company_with_headquarter)
+      }.to change { Headquarter.count }.by(1)
+    end    
+  end
 end

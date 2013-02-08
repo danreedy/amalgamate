@@ -167,7 +167,7 @@ describe Amalgamate::Unity do
         end
       end
 
-      context "master and slave have associated relationships", focus: true do
+      context "master and slave have have_many relationships" do
         subject { Amalgamate::Unity.new(master, slave) }
         before do
           FactoryGirl.create(:company_with_employees, name: 'Vandelay Industries', employee_count: 3)
