@@ -21,7 +21,7 @@ module Amalgamate
       diff_hash = self.diff(master, slave)
       merge_values = diff_hash.reduce({}) do |memo, attribute_set|
         attribute, values = attribute_set
-        memo[attribute] = values[priority] || values[secondary]
+        memo[attribute] = values[priority].nil? ? values[secondary] : values[priority]
         memo
       end
       master.assign_attributes(merge_values)

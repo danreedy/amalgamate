@@ -3,6 +3,7 @@ FactoryGirl.define do
   factory :company do
     name { Faker::Company.name }
     slogan { Faker::Company.catch_phrase }
+    publicly_traded { false }
     factory :company_with_headquarter do
       after(:create) do |company|
         FactoryGirl.create(:headquarter, company: company)
