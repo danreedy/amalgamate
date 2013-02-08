@@ -169,6 +169,7 @@ DEPENDENCIES
   faker
   guard-rspec
   guard-spork
+  jdbc-sqlite3
   jquery-rails
   rb-fsevent
   rspec-rails
