@@ -21,7 +21,7 @@ describe Amalgamate::Unity do
 
     context "matching classes" do
       let(:master) { FactoryGirl.build(:company, name: 'Vandelay Industries', slogan: nil) }
-      
+
       context "multiple attributes are different" do
         let(:slave) { FactoryGirl.build(:company, name: 'The Human Fund', slogan: 'Money for People') }
         let(:difference_hash) do
@@ -40,7 +40,7 @@ describe Amalgamate::Unity do
           let(:difference_array) { [:name, :slogan] }
           it "references #diff when #differing_attributes is called" do
             subject.should_receive(:diff).with(master, slave).and_return(difference_hash)
-            subject.differing_attributes  
+            subject.differing_attributes
           end
           its(:differing_attributes) { should == difference_array }
         end
@@ -56,7 +56,7 @@ describe Amalgamate::Unity do
         describe "#diff" do
           its(:diff) { should == difference_hash }
           it "should return 1 difference" do
-            subject.diff.count.should == 1          
+            subject.diff.count.should == 1
           end
         end
         describe "#differing_attributes" do
@@ -73,16 +73,20 @@ describe Amalgamate::Unity do
     describe "#unify" do
       context "master does not have any nil attributes" do
         before do
-          FactoryGirl.create(:company, name: 'Vandelay Industries', slogan: "Purveyor of Fine Latex Products")
-          FactoryGirl.create(:company, name: 'Vandelay Industries', slogan: 'Money for People')
+          FactoryGirl.create(:company, name: 'Vandelay Industries', slogan: "Purveyor of Fine Latex Products", publicly_traded: false)
+          FactoryGirl.create(:company, name: 'Vandelay Industries', slogan: 'Money for People', publicly_traded: true)
         end
         let(:master) { Company.first }
         let(:slave) { Company.last }
         let(:diff_hash) do
-          { slogan: { master: 'Purveyor of Fine Latex Products', slave: 'Money for People' } }
+          { slogan: { master: 'Purveyor of Fine Latex Products', slave: 'Money for People' },
+            publicly_traded: { master: false, slave: true }
+          }
         end
         let(:update_attributes) do
-          { slogan: 'Purveyor of Fine Latex Products' }
+          { slogan: 'Purveyor of Fine Latex Products',
+            publicly_traded: false,
+          }
         end
 
         it "finds differences using #diff" do
@@ -104,12 +108,16 @@ describe Amalgamate::Unity do
         end
         it "does not destroy slave if options[:destroy] is false" do
           slave.should_not_receive(:destroy)
-          subject.unify(destroy: false) 
+          subject.unify(destroy: false)
         end
         it "results in one less company" do
           expect {
             subject.unify
           }.to change{ Company.count }.from(2).to(1)
+        end
+        it "does not overwrite false values in master" do
+          subject.unify
+          master.reload.publicly_traded.should == false
         end
       end
 
@@ -184,6 +192,6 @@ describe Amalgamate::Unity do
           }.to change { Company.first.employees.count}.from(3).to(8)
         end
       end
-    end   
+    end
   end
 end
