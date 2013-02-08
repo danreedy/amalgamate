@@ -4,7 +4,6 @@ describe Amalgamate::Unity do
   context "public methods" do
     subject { Amalgamate::Unity.new }
     it { subject.respond_to?(:unify).should be_true }
-    it { subject.respond_to?(:combine).should be_true }
     it { subject.respond_to?(:diff).should be_true }
   end
 
