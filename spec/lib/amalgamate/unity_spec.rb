@@ -112,7 +112,8 @@ describe Amalgamate::Unity do
           }.to change{ Company.count }.from(2).to(1)
         end
       end
-      context "use slave as :priority", focus: true do
+
+      context "use slave as :priority" do
         before do
           FactoryGirl.create(:company, name: 'Vandelay Industries', slogan: "Purveyor of Fine Latex Products")
           FactoryGirl.create(:company, name: 'The Human Fund', slogan: 'Money for People')
@@ -163,6 +164,24 @@ describe Amalgamate::Unity do
         it "should replace nil attributes on master with slave values" do
           merged_object = subject.unify
           merged_object.slogan.should == slave.slogan
+        end
+      end
+
+      context "master and slave have associated relationships", focus: true do
+        subject { Amalgamate::Unity.new(master, slave) }
+        before do
+          FactoryGirl.create(:company_with_employees, name: 'Vandelay Industries', employee_count: 3)
+          FactoryGirl.create(:company_with_employees, name: 'The Human Fund', employee_count: 5)
+        end
+        let(:master) { Company.first }
+        let(:slave) { Company.last }
+
+        it { master.employees.count.should == 3}
+        it { slave.employees.count.should == 5}
+        it "reassigns slaves associations to master" do
+          expect {
+            subject.unify
+          }.to change { Company.first.employees.count}.from(3).to(8)
         end
       end
     end   

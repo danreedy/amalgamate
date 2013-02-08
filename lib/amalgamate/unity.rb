@@ -26,6 +26,7 @@ module Amalgamate
       end
       master.assign_attributes(merge_values)
       master.save if options[:save] != false && master.changed?
+      self.reassign_associations(master, slave, priority: priority) unless options[:reassign_associations] == false
       slave.destroy unless options[:destroy] == false
       master 
     end
@@ -43,6 +44,18 @@ module Amalgamate
 
     def differing_attributes(master=@master, slave=@slave, options={})
       self.diff(master,slave).keys
+    end
+
+    def reassign_associations(*args)
+      options = args.extract_options!
+      master, slave = args
+      master ||= @master
+      slave  ||= @slave
+      master.reflections.each_pair do |reflection, details|
+        if [:has_one, :has_many].include? details.macro
+          slave.send(reflection).update_all(details.foreign_key.to_sym => master.id)
+        end
+      end
     end
 
   end
