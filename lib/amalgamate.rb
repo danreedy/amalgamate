@@ -9,10 +9,6 @@ module Amalgamate
     warn "TODO: Implement instance #unify method"
   end
 
-  def combine
-    warn "TODO: Implement instance #combine method"
-  end
-
   def diff
     warn "TODO: Implement instance #diff method"
   end
