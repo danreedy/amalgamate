@@ -31,7 +31,11 @@ module Amalgamate
       master 
     end
 
-    def diff(master=@master, slave=@slave, options={})
+    def diff(*args)
+      options = args.extract_options!
+      master, slave = args if args.any?
+      master ||= @master
+      slave ||= @slave
       options[:ignore] ||= IGNORED_ATTRIBUTES 
       master.attributes.keys.inject({}) do |memo, attribute|
         attribute = attribute.to_sym
