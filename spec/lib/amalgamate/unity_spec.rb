@@ -94,7 +94,7 @@ describe Amalgamate::Unity do
           subject.unify
         end
         it "uses #assign_attributes to update master" do
-          master.should_receive(:assign_attributes).with(update_attributes).and_return({})
+          master.should_receive(:assign_attributes).with(update_attributes, without_protection: true).and_return({})
           subject.unify
         end
         it "uses #changed? to determine whether to save the master" do
