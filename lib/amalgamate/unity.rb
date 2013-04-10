@@ -56,7 +56,7 @@ module Amalgamate
       master ||= @master
       slave  ||= @slave
       master.reflections.each_pair do |reflection, details|
-        if details.macro == :has_many 
+        if details.macro == :has_many && !details.options.has_key?(:through)
           slave.send(reflection).update_all(details.foreign_key.to_sym => master.id) unless slave.send(reflection).nil?
         end
       end
