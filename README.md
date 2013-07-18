@@ -10,11 +10,11 @@ Amalgamate is an extension of ActiveRecord that facilitates merging two individu
 
 ## Installation
 
-### Rails 3.x
+### Rails 4.x
 
 Add the following line to the project `Gemfile`
 
-    gem 'amalgamate', '~> 0.1'
+    gem 'amalgamate', github: 'danreedy/amalgamate', branch: 'rails4'
 
 Then run `bundle install`.
 
