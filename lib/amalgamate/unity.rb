@@ -24,7 +24,7 @@ module Amalgamate
         memo[attribute] = values[priority].nil? ? values[secondary] : values[priority]
         memo
       end
-      master.assign_attributes(merge_values, without_protection: true)
+      master.assign_attributes(merge_values)
       master.save if options[:save] != false && master.changed?
       self.reassign_associations(master, slave, priority: priority) unless options[:reassign_associations] == false
       slave.destroy unless options[:destroy] == false
