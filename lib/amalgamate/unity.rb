@@ -8,7 +8,7 @@ module Amalgamate
     attr_accessor :master, :slave
     def initialize(*args)
       @master, @slave = args
-      raise ClassMismatchError unless @master.class.eql?(@slave.class) 
+      raise ClassMismatchError unless @master.class.eql?(@slave.class)
     end
 
     def unify(*args)
@@ -28,7 +28,7 @@ module Amalgamate
       master.save if options[:save] != false && master.changed?
       self.reassign_associations(master, slave, priority: priority) unless options[:reassign_associations] == false
       slave.destroy unless options[:destroy] == false
-      master 
+      master
     end
 
     def diff(*args)
@@ -36,7 +36,7 @@ module Amalgamate
       master, slave = args if args.any?
       master ||= @master
       slave ||= @slave
-      options[:ignore] ||= IGNORED_ATTRIBUTES 
+      options[:ignore] ||= IGNORED_ATTRIBUTES
       master.attributes.keys.inject({}) do |memo, attribute|
         attribute = attribute.to_sym
         unless options[:ignore].include?(attribute)
