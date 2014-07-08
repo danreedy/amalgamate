@@ -11,7 +11,7 @@ describe Company do
   context "company with employees" do
     before do
       FactoryGirl.create(:company_with_employees, employee_count: 3)
-    end        
+    end
     subject { Company.first }
     it "builds a company with 3 employees" do
       subject.employees.size.should == 3
@@ -22,7 +22,7 @@ describe Company do
       expect {
         FactoryGirl.create(:company_with_headquarter)
       }.to change { Headquarter.count }.by(1)
-    end    
+    end
   end
   describe "amalgamate extensions", focus: true do
     it { subject.respond_to?(:unify).should be_true }
