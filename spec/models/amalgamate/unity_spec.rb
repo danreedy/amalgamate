@@ -20,7 +20,7 @@ describe Amalgamate::Unity do
 
     context "matching classes" do
       let(:master) { FactoryGirl.build(:company, name: 'Vandelay Industries', slogan: nil) }
-      
+
       context "multiple attributes are different" do
         let(:slave) { FactoryGirl.build(:company, name: 'The Human Fund', slogan: 'Money for People') }
         let(:difference_hash) do
@@ -39,7 +39,7 @@ describe Amalgamate::Unity do
           let(:difference_array) { [:name, :slogan] }
           it "references #diff when #differing_attributes is called" do
             subject.should_receive(:diff).with(master, slave).and_return(difference_hash)
-            subject.differing_attributes  
+            subject.differing_attributes
           end
           its(:differing_attributes) { should == difference_array }
         end
@@ -55,7 +55,7 @@ describe Amalgamate::Unity do
         describe "#diff" do
           its(:diff) { should == difference_hash }
           it "should return 1 difference" do
-            subject.diff.count.should == 1          
+            subject.diff.count.should == 1
           end
         end
         describe "#differing_attributes" do

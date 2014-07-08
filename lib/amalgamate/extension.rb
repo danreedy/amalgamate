@@ -10,7 +10,7 @@ module Amalgamate
 
     def diff(slave, options={})
       unity = Amalgamate::Unity.new(self, slave)
-      unity.diff(options)  
+      unity.diff(options)
     end
   end
 

@@ -3,9 +3,15 @@ require 'spec_helper'
 describe Amalgamate::Unity do
   context "public methods" do
     subject { Amalgamate::Unity.new }
-    it { subject.respond_to?(:unify).should be_true }
-    it { subject.respond_to?(:diff).should be_true }
-    it { subject.respond_to?(:differing_attributes).should be_true }
+    it 'responds to unify' do
+      expect(subject.respond_to?(:unify)).to be_true
+    end
+    it 'responds to diff' do
+      subject.respond_to?(:diff).should be_true
+    end
+    it 'responds to #differing_attributes' do
+      subject.respond_to?(:differing_attributes).should be_true
+    end
   end
 
   describe "Finding Differences using #diff and #differing_attributes" do
@@ -33,16 +39,15 @@ describe Amalgamate::Unity do
         describe "#diff" do
           its(:diff) { should == difference_hash }
           it "should return 2 differences" do
-            subject.diff.count.should == 2
+            expect(subject.diff.count).to eq 2
           end
         end
         describe "#differing_attributes" do
           let(:difference_array) { [:name, :slogan] }
           it "references #diff when #differing_attributes is called" do
-            subject.should_receive(:diff).with(master, slave).and_return(difference_hash)
-            subject.differing_attributes
+            expect(subject).to receive(:diff).with(master, slave).and_return(difference_hash)
+            expect(subject.differing_attributes).to eq difference_array
           end
-          its(:differing_attributes) { should == difference_array }
         end
       end
 
@@ -56,12 +61,14 @@ describe Amalgamate::Unity do
         describe "#diff" do
           its(:diff) { should == difference_hash }
           it "should return 1 difference" do
-            subject.diff.count.should == 1
+            expect(subject.diff.count).to eq 1
           end
         end
         describe "#differing_attributes" do
           let(:difference_array) { [:slogan] }
-          its(:differing_attributes) { should == difference_array }
+          it 'returns an array of differing attributes' do
+            expect(subject.differing_attributes).to eq difference_array
+          end
         end
       end
     end
@@ -90,24 +97,24 @@ describe Amalgamate::Unity do
         end
 
         it "finds differences using #diff" do
-          subject.should_receive(:diff).with(master, slave).and_return(diff_hash)
+          expect(subject).to receive(:diff).with(master, slave).and_return(diff_hash)
           subject.unify
         end
         it "uses #assign_attributes to update master" do
-          master.should_receive(:assign_attributes).with(update_attributes, without_protection: true).and_return({})
+          expect(master).to receive(:assign_attributes).with(update_attributes).and_return({})
           subject.unify
         end
         it "uses #changed? to determine whether to save the master" do
-          master.should_receive(:changed?).and_return(false)
-          master.should_not_receive(:save)
+          expect(master).to receive(:changed?).and_return(false)
+          expect(master).not_to receive(:save)
           subject.unify
         end
         it "destroys slave when merged" do
-          slave.should_receive(:destroy)
+          expect(slave).to receive(:destroy)
           subject.unify
         end
         it "does not destroy slave if options[:destroy] is false" do
-          slave.should_not_receive(:destroy)
+          expect(slave).not_to receive(:destroy)
           subject.unify(destroy: false)
         end
         it "results in one less company" do
@@ -117,7 +124,7 @@ describe Amalgamate::Unity do
         end
         it "does not overwrite false values in master" do
           subject.unify
-          master.reload.publicly_traded.should == false
+          expect(master.reload.publicly_traded).to eq false
         end
       end
 
@@ -150,28 +157,28 @@ describe Amalgamate::Unity do
         end
 
         it "finds differences using #diff" do
-          subject.should_receive(:diff).with(master, slave).and_return(diff_hash)
+          expect(subject).to receive(:diff).with(master, slave).and_return(diff_hash)
           subject.unify
         end
         it "uses #assign_attributes to update master" do
-          master.should_receive(:assign_attributes).with(update_attributes).and_return({})
+          expect(master).to receive(:assign_attributes).with(update_attributes).and_return({})
           subject.unify
         end
         it "calls #save with a changed master" do
-          master.should_receive(:save).and_return(true)
+          expect(master).to receive(:save).and_return(true)
           subject.unify
         end
         it "does not call #save if options[:save] is false" do
-          master.should_not_receive(:save)
+          expect(master).not_to receive(:save)
           subject.unify(save: false)
         end
         it "should return the merged object" do
           merged_object = subject.unify
-          merged_object.should be_a Company
+          expect(merged_object).to be_a Company
         end
         it "should replace nil attributes on master with slave values" do
           merged_object = subject.unify
-          merged_object.slogan.should == slave.slogan
+          expect(merged_object.slogan).to eq slave.slogan
         end
       end
 
@@ -184,8 +191,12 @@ describe Amalgamate::Unity do
         let(:master) { Company.first }
         let(:slave) { Company.last }
 
-        it { master.employees.count.should == 3}
-        it { slave.employees.count.should == 5}
+        it 'returns the correct value for a master attribute' do
+          expect(master.employees.count).to eq 3
+        end
+        it 'returns the correct value for a slave attribute' do
+          expect(slave.employees.count).to eq 5
+        end
         it "reassigns slaves associations to master" do
           expect {
             subject.unify
